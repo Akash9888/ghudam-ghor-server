@@ -10,7 +10,7 @@ connectToMongo();
 //     res.send("Hello World!");
 // });
 //products route
-app.use("/api/product", require("./Routes/productRoutes"));
+app.use("/api/products", require("./Routes/productRoutes"));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

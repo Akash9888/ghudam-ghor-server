@@ -4,7 +4,7 @@ const Product = require("../Models/Product");
 
 const { body, validationResult } = require("express-validator");
 
-//save Products
+//create Products
 router.post(
     "/add",
     [
@@ -31,4 +31,15 @@ router.post(
         }
     }
 );
+
+//read products
+router.get("/fetch", async (req, res) => {
+    const products = await Product.find({});
+
+    try {
+        res.send(products);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
 module.exports = router;
