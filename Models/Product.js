@@ -26,5 +26,10 @@ const ProductSchema = new Schema({
         type: "string",
         required: true,
     },
+    supplier: {
+        type: "string",
+        required: true,
+    },
 });
-module.exports = mongoose.model("product", ProductSchema);
+const Product = mongoose.model("Product", ProductSchema);
+module.exports = Product;
