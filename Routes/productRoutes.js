@@ -4,7 +4,7 @@ const Product = require("../Models/Product");
 
 const { body, validationResult } = require("express-validator");
 
-//create Products
+//get Products
 router.post(
     "/add",
     [
@@ -42,4 +42,17 @@ router.get("/fetch", async (req, res) => {
         res.status(500).send(e);
     }
 });
+
+//filter products by email
+
+router.get("/filter/:email", async (req, res) => {
+    const products = await Product.find(req.params);
+
+    try {
+        res.send(products);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
+
 module.exports = router;
