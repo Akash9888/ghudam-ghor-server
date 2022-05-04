@@ -8,11 +8,11 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 connectToMongo();
 
-// app.get("/", (req, res) => {
-//     res.send("Hello World!");
-// });
 //products route
 app.use("/api/products", require("./Routes/productRoutes"));
+
+//users route
+app.use("/api/users", require("./Routes/UserRoutes"));
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);

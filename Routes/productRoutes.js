@@ -4,8 +4,9 @@ const Product = require("../Models/Product");
 const ObjectId = require("mongodb").ObjectId;
 
 const { body, validationResult } = require("express-validator");
+const verifyJwt = require("../Middleware/VerifyJwt");
 
-//get Products
+//add Products
 router.post(
     "/add",
     [
@@ -85,7 +86,8 @@ router.put("/update/:_id", async (req, res) => {
 });
 
 //product delete
-router.delete("/delete/:_id", async (req, res) => {
+router.delete("/delete/:_id", verifyJwt, async (req, res) => {
+    console.log(req.headers.authorization);
     const query = { _id: ObjectId(req.params._id) };
     try {
         console.log("delete");
