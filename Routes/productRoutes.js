@@ -35,8 +35,21 @@ router.post(
 );
 
 //read products
-router.get("/fetch", async (req, res) => {
+router.get("/fetch", verifyJwt, async (req, res) => {
+    console.log(req.headers.authorization);
     const products = await Product.find({});
+
+    try {
+        res.send(products);
+    } catch (e) {
+        res.status(500).send(e);
+    }
+});
+
+//read products for home
+router.get("/fetch/home", verifyJwt, async (req, res) => {
+    console.log(req.headers.authorization);
+    const products = await Product.find({}).limit(6);
 
     try {
         res.send(products);
