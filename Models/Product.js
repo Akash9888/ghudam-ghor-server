@@ -17,6 +17,10 @@ const ProductSchema = new Schema({
         type: "number",
         required: true,
     },
+    quantity: {
+        type: "number",
+        required: true,
+    },
 
     email: {
         type: "string",

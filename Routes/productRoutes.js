@@ -25,6 +25,7 @@ router.post(
         }
 
         const product = new Product(req.body);
+
         try {
             await product.save();
             res.send(product);
@@ -34,11 +35,9 @@ router.post(
     }
 );
 
-//read products
+//fetch all products
 router.get("/fetch", verifyJwt, async (req, res) => {
-    console.log(req.headers.authorization);
-    const products = await Product.find({});
-
+    const products = await Product.find();
     try {
         res.send(products);
     } catch (e) {
@@ -46,9 +45,8 @@ router.get("/fetch", verifyJwt, async (req, res) => {
     }
 });
 
-//read products for home
+//fetch products for home section
 router.get("/fetch/home", verifyJwt, async (req, res) => {
-    console.log(req.headers.authorization);
     const products = await Product.find({}).limit(6);
 
     try {
@@ -57,13 +55,35 @@ router.get("/fetch/home", verifyJwt, async (req, res) => {
         res.status(500).send(e);
     }
 });
+//all products count
+// router.get("/fetch/count", verifyJwt, async (req, res) => {
+//     console.log("-----------------------");
+//     // const products = await Product.estimatedDocumentCount().exec();
+
+//     Product.countDocuments({}).exec((err, count) => {
+//         if (err) {
+//             res.send(err);
+//             return;
+//         }
+
+//         res.json({ count: count });
+//     });
+
+//     // console.log(products);
+
+//     // try {
+//     //     res.send(products);
+//     // } catch (e) {
+//     //     console.log("err");
+//     //     res.status(500).send(e);
+//     // }
+// });
 
 //find products by email
-
-router.get("/filter/:email", async (req, res) => {
-    const products = await Product.find(req.params);
-
+router.get("/filter/:email", verifyJwt, async (req, res) => {
     try {
+        const products = await Product.find(req.params);
+
         res.send(products);
     } catch (e) {
         res.status(500).send(e);
@@ -71,10 +91,8 @@ router.get("/filter/:email", async (req, res) => {
 });
 
 //find product by id
-router.get("/filter/single/:_id", async (req, res) => {
-    console.log(req.params._id);
+router.get("/filter/single/:_id", verifyJwt, async (req, res) => {
     const query = { _id: ObjectId(req.params._id) };
-    console.log(query);
 
     const products = await Product.find(query);
     try {
@@ -84,26 +102,25 @@ router.get("/filter/single/:_id", async (req, res) => {
     }
 });
 
-//update product count
+//update product
 router.put("/update/:_id", async (req, res) => {
     const query = { _id: ObjectId(req.params._id) };
-    console.log(query);
-    console.log(req.body);
 
-    try {
-        await Product.findOneAndUpdate(query, req.body, { new: true });
-        await Product.save();
-    } catch (e) {
-        res.status(500).send(e);
-    }
+    Product.findOneAndUpdate(
+        query,
+        req.body,
+        { upsert: true },
+        function (err, doc) {
+            if (err) return res.send(500, { error: err });
+            return res.send("Succesfully saved.");
+        }
+    );
 });
 
 //product delete
 router.delete("/delete/:_id", verifyJwt, async (req, res) => {
-    console.log(req.headers.authorization);
     const query = { _id: ObjectId(req.params._id) };
     try {
-        console.log("delete");
         const result = await Product.findOneAndDelete(query);
         if (!result) res.status(404).send("No item found");
         res.status(200).send();

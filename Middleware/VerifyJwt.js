@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const verifyJwt = (req, res, next) => {
     const authHeader = req.headers.authorization;
-    console.log("inside jwt", authHeader);
+
     if (!authHeader) {
         return res.status(401).send({ message: "unauthorized access" });
     }
